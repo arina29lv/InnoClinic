@@ -1,0 +1,73 @@
+## Build results
+bin/
+obj/
+[Ll]og/
+*.log
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+*.sdf
+*.sln.docstates
+
+## Mono Auto Generated Files
+mono_crash.*
+
+## Visual Studio Code settings
+.vscode/
+
+## Visual Studio folder
+.vs/
+
+## Recycle Bin for VS
+*.cache
+*.dbmdl
+
+## NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+*.nuget.props
+*.nuget.targets
+
+## MSBuild files
+*.pidb
+*.psess
+*.vsp
+*.vspx
+*.vspscc
+*.vssscc
+
+## Resharper and Rider
+.idea/
+*.DotSettings.user
+
+## Temporary files
+*.tmp
+*.bak
+*.backup
+*.swp
+
+## Web/ASP.NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/wwwroot/lib/
+
+## Entity Framework
+Migrations/
+
+## Logs
+*.log
+*.tlog
+
+## Others
+TestResults/
+*.publishsettings
+*.orig
+
+# JetBrains Rider
+.idea/
+*.sln.iml
