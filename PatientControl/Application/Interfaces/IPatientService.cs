@@ -8,7 +8,7 @@ namespace PatientControl.Application.Interfaces
         Task<IEnumerable<Patient>> GetAllAsync();
         Task<Patient> GetByIdAsync(int id);
         Task AddAsync(CreatePatientDto createPatientDto);
-        Task DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
         Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, int id);
         Task<Patient> GetByAccountIdAsync(int accountId);
     }

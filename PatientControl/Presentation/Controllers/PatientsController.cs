@@ -42,9 +42,6 @@ namespace PatientControl.Presentation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientDto updatePatientDto)
         {
-            //await _patientService.UpdateAsync(updatePatientDto, id);
-            //return NoContent();
-
             var patient = await _patientService.UpdateAsync(updatePatientDto, id);
             return patient 
                 ? NoContent() 
@@ -54,8 +51,9 @@ namespace PatientControl.Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            await _patientService.DeleteAsync(id);
-            return NoContent();
+            return await _patientService.DeleteAsync(id)
+                ? NoContent() 
+                : NotFound(new { error = $"Patient with ID {id} not found." });
         }
 
         [HttpGet("account/{accountId}")]

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PatientControl.Application.Interfaces;
+using PatientControl.Application.Mappings;
 using PatientControl.Application.Services;
 using PatientControl.Domain.Interfaces;
 using PatientControl.Infrastructure.Persistence;
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<PatientDbContext>(options => 
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();

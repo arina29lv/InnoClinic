@@ -1,4 +1,5 @@
-﻿using PatientControl.Application.DTOs;
+﻿using AutoMapper;
+using PatientControl.Application.DTOs;
 using PatientControl.Application.Interfaces;
 using PatientControl.Domain.Entities;
 using PatientControl.Domain.Interfaces;
@@ -8,10 +9,12 @@ namespace PatientControl.Application.Services
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _patientRepository;
+        private readonly IMapper _mapper;
 
-        public PatientService(IPatientRepository patientRepository)
+        public PatientService(IPatientRepository patientRepository, IMapper mapper)
         {
             _patientRepository = patientRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Patient>> GetAllAsync()
@@ -26,22 +29,20 @@ namespace PatientControl.Application.Services
 
         public async Task AddAsync(CreatePatientDto createPatientDto)
         {
-            var patient = new Patient
-            {
-                FirstName = createPatientDto.FirstName,
-                LastName = createPatientDto.LastName,
-                MiddleName = createPatientDto.MiddleName,
-                IsLinkedToAccount = createPatientDto.IsLinkedToAccount,
-                DateOfBirth = createPatientDto.DateOfBirth,
-                AccountId = createPatientDto.AccountId
-            };
-
+            var patient = _mapper.Map<Patient>(createPatientDto);
             await _patientRepository.AddAsync(patient);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
+            var patient = await _patientRepository.GetByIdAsync(id);
+            if (patient == null) 
+            {
+                return false;
+            }
+
             await _patientRepository.DeleteAsync(id);
+            return true;
         }
 
         public async Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, int id)
@@ -52,12 +53,7 @@ namespace PatientControl.Application.Services
                 return false;
             }
 
-            patient.FirstName = updatePatientDto.FirstName;
-            patient.LastName = updatePatientDto.LastName;
-            patient.MiddleName = updatePatientDto.MiddleName;
-            patient.IsLinkedToAccount = updatePatientDto.IsLinkedToAccount;
-            patient.DateOfBirth = updatePatientDto.DateOfBirth;
-            patient.AccountId = updatePatientDto.AccountId;
+            _mapper.Map(updatePatientDto, patient);
 
             await _patientRepository.UpdateAsync(patient);
             return true;
