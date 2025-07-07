@@ -46,20 +46,18 @@ namespace PatientControl.Application.Services
 
         public async Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, int id)
         {
-            var record = await _patientRepository.GetByIdAsync(id);
-            if (record == null)
+            var patient = await _patientRepository.GetByIdAsync(id);
+            if (patient == null)
             {
                 return false;
             }
-            var patient = new Patient
-            {
-                FirstName = updatePatientDto.FirstName,
-                LastName = updatePatientDto.LastName,
-                MiddleName = updatePatientDto.MiddleName,
-                IsLinkedToAccount = updatePatientDto.IsLinkedToAccount,
-                DateOfBirth = updatePatientDto.DateOfBirth,
-                AccountId = updatePatientDto.AccountId
-            };
+
+            patient.FirstName = updatePatientDto.FirstName;
+            patient.LastName = updatePatientDto.LastName;
+            patient.MiddleName = updatePatientDto.MiddleName;
+            patient.IsLinkedToAccount = updatePatientDto.IsLinkedToAccount;
+            patient.DateOfBirth = updatePatientDto.DateOfBirth;
+            patient.AccountId = updatePatientDto.AccountId;
 
             await _patientRepository.UpdateAsync(patient);
             return true;
