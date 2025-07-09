@@ -19,34 +19,38 @@ namespace PatientControl.Infrastructure.Repositories
             return await _context.Patients.ToListAsync();
         }
 
-        public async Task<Patient?> GetByIdAsync(int id)
+        public async Task<Patient?> GetByIdAsync(Guid id)
         {
             return await _context.Patients.FindAsync(id);
         }
 
         public async Task AddAsync(Patient patient)
         {
-            await _context.Patients.AddAsync(patient);
+            _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var patient = await _context.Patients.FindAsync(id);
             if (patient != null)
             {
                 _context.Patients.Remove(patient);
                 await _context.SaveChangesAsync();
+                return true;
             }
+
+            return false;
         }
 
         public async Task UpdateAsync(Patient patient)
         {
             _context.Patients.Update(patient);
             await _context.SaveChangesAsync();
+            
         }
 
-        public async Task<Patient> GetByAccountIdAsync(int accountId)
+        public async Task<Patient> GetByAccountIdAsync(Guid accountId)
         {
             return await _context.Patients
                 .Where(p => p.AccountId == accountId)

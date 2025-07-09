@@ -24,7 +24,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPatientById(int id)
+        public async Task<IActionResult> GetPatientById(Guid id)
         {
             var patient = await _patientService.GetByIdAsync(id);
             return patient == null 
@@ -40,7 +40,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientDto updatePatientDto)
+        public async Task<IActionResult> UpdatePatient(Guid id, [FromBody] UpdatePatientDto updatePatientDto)
         {
             var patient = await _patientService.UpdateAsync(updatePatientDto, id);
             return patient 
@@ -49,7 +49,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePatient(int id)
+        public async Task<IActionResult> DeletePatient(Guid id)
         {
             return await _patientService.DeleteAsync(id)
                 ? NoContent() 
@@ -57,7 +57,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpGet("account/{accountId}")]
-        public async Task<IActionResult> GetPatientByAccountId(int accountId)
+        public async Task<IActionResult> GetPatientByAccountId(Guid accountId)
         {
             var patient = await _patientService.GetByAccountIdAsync(accountId);
             return patient == null 

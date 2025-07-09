@@ -6,10 +6,10 @@ namespace PatientControl.Application.Interfaces
     public interface IPatientService
     {
         Task<IEnumerable<Patient>> GetAllAsync();
-        Task<Patient> GetByIdAsync(int id);
+        Task<Patient> GetByIdAsync(Guid id);
         Task AddAsync(CreatePatientDto createPatientDto);
-        Task<bool> DeleteAsync(int id);
-        Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, int id);
-        Task<Patient> GetByAccountIdAsync(int accountId);
+        Task<bool> DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, Guid id);
+        Task<Patient> GetByAccountIdAsync(Guid accountId);
     }
 }

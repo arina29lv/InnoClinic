@@ -5,10 +5,10 @@ namespace PatientControl.Domain.Interfaces
     public interface IPatientRepository
     {
         Task<IEnumerable<Patient>> GetAllAsync();
-        Task<Patient?> GetByIdAsync (int id);
+        Task<Patient?> GetByIdAsync (Guid id);
         Task AddAsync (Patient patient);
-        Task DeleteAsync (int id);
+        Task<bool> DeleteAsync (Guid id);
         Task UpdateAsync (Patient patient);
-        Task<Patient> GetByAccountIdAsync(int accountId);
+        Task<Patient> GetByAccountIdAsync(Guid accountId);
     }
 }
