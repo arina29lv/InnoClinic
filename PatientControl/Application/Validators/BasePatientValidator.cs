@@ -3,7 +3,7 @@ using PatientControl.Application.DTOs.Interfaces;
 
 namespace PatientControl.Application.Validators
 {
-    public class BasePatientValidator<T> : AbstractValidator<T> where T : IPatientBase
+    public class BasePatientValidator<T> : AbstractValidator<T> where T : PatientBase
     {
         protected BasePatientValidator() 
         {

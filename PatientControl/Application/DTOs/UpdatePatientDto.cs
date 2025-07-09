@@ -2,7 +2,7 @@
 
 namespace PatientControl.Application.DTOs
 {
-    public record UpdatePatientDto : IPatientBase
+    public record UpdatePatientDto : PatientBase
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
