@@ -22,7 +22,7 @@ namespace PatientControl.Application.Services
             return await _patientRepository.GetAllAsync();
         }
 
-        public async Task<Patient> GetByIdAsync(int id)
+        public async Task<Patient> GetByIdAsync(Guid id)
         {
             return await _patientRepository.GetByIdAsync(id);
         }
@@ -33,7 +33,7 @@ namespace PatientControl.Application.Services
             await _patientRepository.AddAsync(patient);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var patient = await _patientRepository.GetByIdAsync(id);
             if (patient == null) 
@@ -45,7 +45,7 @@ namespace PatientControl.Application.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, int id)
+        public async Task<bool> UpdateAsync(UpdatePatientDto updatePatientDto, Guid id)
         {
             var patient = await _patientRepository.GetByIdAsync(id);
             if (patient == null)
@@ -59,7 +59,7 @@ namespace PatientControl.Application.Services
             return true;
         }
 
-        public async Task<Patient> GetByAccountIdAsync(int accountId)
+        public async Task<Patient> GetByAccountIdAsync(Guid accountId)
         {
             return await _patientRepository.GetByAccountIdAsync(accountId);
         }
