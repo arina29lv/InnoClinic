@@ -1,6 +1,6 @@
 ﻿namespace PatientControl.Application.DTOs
 {
-    public class CreatePatientDto
+    public record CreatePatientDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

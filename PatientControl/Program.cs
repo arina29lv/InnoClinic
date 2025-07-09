@@ -1,7 +1,11 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientControl.Application.Interfaces;
 using PatientControl.Application.Mappings;
 using PatientControl.Application.Services;
+using PatientControl.Application.Validators;
 using PatientControl.Domain.Interfaces;
 using PatientControl.Infrastructure.Persistence;
 using PatientControl.Infrastructure.Repositories;
@@ -17,6 +21,15 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 
 builder.Services.AddControllers();
+
+/* Validations */
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreatePatientValidator>();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = false;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
