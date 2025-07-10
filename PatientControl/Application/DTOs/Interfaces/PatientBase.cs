@@ -1,6 +1,6 @@
 ﻿namespace PatientControl.Application.DTOs.Interfaces
 {
-    public class PatientBase
+    public record PatientBase
     {
         string FirstName { get; }
         string LastName { get; }
