@@ -2,9 +2,9 @@
 {
     public record PatientBase
     {
-        string FirstName { get; }
-        string LastName { get; }
-        string? MiddleName { get; }
-        DateTime DateOfBirth { get; }
+        public string FirstName { get; init; }
+        public string LastName { get; init; }
+        public string? MiddleName { get; init; }
+        public DateTime DateOfBirth { get; init; }
     }
 }
