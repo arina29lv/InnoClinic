@@ -39,6 +39,14 @@ namespace PatientControl.Presentation.Controllers
             return Ok();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePatient(Guid id)
+        {
+            return await _patientService.DeleteAsync(id)
+                ? NoContent()
+                : NotFound(new { error = $"Patient with ID {id} not found." });
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePatient(Guid id, [FromBody] UpdatePatientDto updatePatientDto)
         {
@@ -46,14 +54,6 @@ namespace PatientControl.Presentation.Controllers
             return patient 
                 ? NoContent() 
                 : NotFound(new { error = $"Patient with ID {id} not found."});
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePatient(Guid id)
-        {
-            return await _patientService.DeleteAsync(id)
-                ? NoContent() 
-                : NotFound(new { error = $"Patient with ID {id} not found." });
         }
 
         [HttpGet("account/{accountId}")]

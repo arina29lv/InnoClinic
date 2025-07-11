@@ -17,12 +17,6 @@ builder.Services.AddDbContext<PatientDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientService, PatientService>();
-
-builder.Services.AddControllers();
-
-/* Validations */
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreatePatientValidator>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -30,6 +24,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = false;
 });
 
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
