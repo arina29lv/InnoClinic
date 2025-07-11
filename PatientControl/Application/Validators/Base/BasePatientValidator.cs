@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using PatientControl.Application.DTOs.Interfaces;
+using PatientControl.Application.DTOs.Base;
 
-namespace PatientControl.Application.Validators
+namespace PatientControl.Application.Validators.Base
 {
     public class BasePatientValidator<T> : AbstractValidator<T> where T : PatientBase
     {

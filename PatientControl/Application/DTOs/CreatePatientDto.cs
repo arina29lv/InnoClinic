@@ -1,14 +1,10 @@
-﻿using PatientControl.Application.DTOs.Interfaces;
+﻿using PatientControl.Application.DTOs.Base;
 
 namespace PatientControl.Application.DTOs
 {
     public record CreatePatientDto : PatientBase
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
         public bool IsLinkedToAccount { get; set; }
-        public DateTime DateOfBirth { get; set; }
         public Guid AccountId { get; set; }
 
     }

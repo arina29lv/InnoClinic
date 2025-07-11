@@ -17,7 +17,6 @@ builder.Services.AddDbContext<PatientDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-/* Validations */
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreatePatientValidator>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>

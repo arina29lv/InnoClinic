@@ -1,4 +1,4 @@
-﻿namespace PatientControl.Application.DTOs.Interfaces
+﻿namespace PatientControl.Application.DTOs.Base
 {
     public record PatientBase
     {

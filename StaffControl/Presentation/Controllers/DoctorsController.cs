@@ -27,7 +27,7 @@ namespace StaffControl.Presentation.Controllers
         {
             var doctor = await _doctorService.GetByIdAsync(id);
             return doctor == null 
-                ? NotFound( new { error = "Patient not found."}) 
+                ? NotFound( new { error = "Doctor not found."}) 
                 : Ok(doctor);
         }
 
