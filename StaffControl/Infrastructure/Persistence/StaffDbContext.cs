@@ -45,7 +45,7 @@ namespace StaffControl.Infrastructure.Persistence
                 entity.Property(d => d.CareerStartYear)
                 .IsRequired();
 
-                entity.Property(d => d.Status)
+                entity.Property(d => d.ActivityStatus)
                 .IsRequired();
             });
 

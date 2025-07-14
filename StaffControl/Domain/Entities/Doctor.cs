@@ -14,6 +14,6 @@ namespace StaffControl.Domain.Entities
         public Guid SpecializationId { get; set; }
         public Guid OfficeId { get; set; }
         public DateTime CareerStartYear { get; set; }
-        public string Status {  get; set; }
+        public string ActivityStatus {  get; set; }
     }
-}
+} 

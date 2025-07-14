@@ -24,7 +24,7 @@ namespace StaffControl.Application.Validators.Base
             RuleFor(d => d.CareerStartYear)
                 .LessThanOrEqualTo(DateTime.Today).WithMessage("Career start year cannot be in the future.");
 
-            RuleFor(d => d.Status)
+            RuleFor(d => d.ActivityStatus)
                 .NotEmpty().WithMessage("Status is requared.")
                 .MaximumLength(50);
         }

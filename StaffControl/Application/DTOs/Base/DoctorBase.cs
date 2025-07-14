@@ -7,6 +7,6 @@
         public string MiddleName { get; init; }
         public DateTime DateOfBirth { get; init; }
         public DateTime CareerStartYear { get; init; }
-        public string Status { get; init; }
+        public string ActivityStatus { get; init; }
     }
 }
