@@ -31,22 +31,17 @@ namespace AccountControl.Infrastructure.Persistence
                 entity.Property(a => a.IsEmailVerified)
                 .IsRequired();
 
-                entity.Property(a => a.PhotoId)
-                .IsRequired();
+                entity.Property(a => a.PhotoId);
 
                 entity.Property(a => a.CreatedBy)
                 .IsRequired();
 
                 entity.Property(a => a.CreatedAt)
-                .IsRequired()
-                .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.Property(a => a.UpdatedBy)
                 .IsRequired();
 
-                entity.Property(a => a.UpdatedAt)
-                .IsRequired()
-                .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(a => a.UpdatedBy);
+
+                entity.Property(a => a.UpdatedAt);
             });
         }   
         
