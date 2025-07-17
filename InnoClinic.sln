@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffControl", "StaffControl\StaffControl.csproj", "{0546BFFA-8C1F-4250-A95E-5B9E3DE3BF79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountControl", "AccountControl\AccountControl.csproj", "{39E8222A-AB28-4F04-81AF-F4831E9DBD86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{0546BFFA-8C1F-4250-A95E-5B9E3DE3BF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0546BFFA-8C1F-4250-A95E-5B9E3DE3BF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0546BFFA-8C1F-4250-A95E-5B9E3DE3BF79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39E8222A-AB28-4F04-81AF-F4831E9DBD86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39E8222A-AB28-4F04-81AF-F4831E9DBD86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39E8222A-AB28-4F04-81AF-F4831E9DBD86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39E8222A-AB28-4F04-81AF-F4831E9DBD86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
