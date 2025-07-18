@@ -7,8 +7,11 @@ using StaffControl.Application.Mappings;
 using StaffControl.Application.Services;
 using StaffControl.Application.Validators.DoctorValidator;
 using StaffControl.Domain.Interfaces;
+using StaffControl.Infrastructure.Interfaces;
+using StaffControl.Infrastructure.Messaging;
 using StaffControl.Infrastructure.Persistence;
 using StaffControl.Infrastructure.Repositories;
+using StaffControl.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,8 @@ builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
 builder.Services.AddScoped<IReceptionistService, ReceptonistService>();
+builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
+builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

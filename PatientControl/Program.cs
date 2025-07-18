@@ -7,8 +7,11 @@ using PatientControl.Application.Mappings;
 using PatientControl.Application.Services;
 using PatientControl.Application.Validators;
 using PatientControl.Domain.Interfaces;
+using PatientControl.Infrastructure.Interfaces;
+using PatientControl.Infrastructure.Messaging;
 using PatientControl.Infrastructure.Persistence;
 using PatientControl.Infrastructure.Repositories;
+using PatientControl.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
+builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

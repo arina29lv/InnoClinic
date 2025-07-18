@@ -3,8 +3,11 @@ using AccountControl.Application.Mappings;
 using AccountControl.Application.Services;
 using AccountControl.Application.Validators;
 using AccountControl.Domain.Interfaces;
+using AccountControl.Infrastructure.Interfaces;
+using AccountControl.Infrastructure.Messaging;
 using AccountControl.Infrastructure.Persistence;
 using AccountControl.Infrastructure.Repositories;
+using AccountControl.Infrastructure.Service;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +29,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
+builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
