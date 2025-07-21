@@ -10,6 +10,7 @@ using PatientControl.Application.Validators;
 using PatientControl.Domain.Interfaces;
 using PatientControl.Infrastructure.Interfaces;
 using PatientControl.Infrastructure.Messaging;
+using PatientControl.Infrastructure.Middleware;
 using PatientControl.Infrastructure.Persistence;
 using PatientControl.Infrastructure.Repositories;
 using PatientControl.Infrastructure.Services;
@@ -57,6 +58,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GlobalExeptionMiddleware>();
 
 app.MapControllers();
 app.Run();

@@ -5,6 +5,7 @@ using AccountControl.Application.Validators;
 using AccountControl.Domain.Interfaces;
 using AccountControl.Infrastructure.Interfaces;
 using AccountControl.Infrastructure.Messaging;
+using AccountControl.Infrastructure.Middleware;
 using AccountControl.Infrastructure.Persistence;
 using AccountControl.Infrastructure.Repositories;
 using AccountControl.Infrastructure.Service;
@@ -57,6 +58,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GlobalExeptionMiddleware>();
 
 app.MapControllers();
 app.Run();

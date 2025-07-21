@@ -10,6 +10,7 @@ using StaffControl.Application.Validators.DoctorValidator;
 using StaffControl.Domain.Interfaces;
 using StaffControl.Infrastructure.Interfaces;
 using StaffControl.Infrastructure.Messaging;
+using StaffControl.Infrastructure.Middleware;
 using StaffControl.Infrastructure.Persistence;
 using StaffControl.Infrastructure.Repositories;
 using StaffControl.Infrastructure.Services;
@@ -59,6 +60,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GlobalExeptionMiddleware>();
 
 app.MapControllers();
 app.Run();
