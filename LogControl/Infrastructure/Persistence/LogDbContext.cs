@@ -15,6 +15,7 @@ namespace LogControl.Infrastructure.Persistence
 
             modelBuilder.Entity<Log>(entity =>
             {
+                entity.HasKey(l => l.Id);
 
                 entity.Property(l => l.Level)
                 .IsRequired()

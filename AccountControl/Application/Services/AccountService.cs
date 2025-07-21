@@ -2,8 +2,8 @@
 using AccountControl.Application.Interfaces;
 using AccountControl.Domain.Entities;
 using AccountControl.Domain.Interfaces;
-using AccountControl.Infrastructure.Interfaces;
 using AutoMapper;
+using Contracts.Logs.Interfaces;
 
 namespace AccountControl.Application.Services
 {

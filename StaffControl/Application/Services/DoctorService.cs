@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Contracts.Logs.Interfaces;
 using StaffControl.Application.DTOs.DoctorDTOs;
 using StaffControl.Application.Interfaces;
 using StaffControl.Domain.Entities;
 using StaffControl.Domain.Interfaces;
-using StaffControl.Infrastructure.Interfaces;
 
 namespace StaffControl.Application.Services
 {

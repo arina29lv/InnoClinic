@@ -1,18 +1,18 @@
-﻿using Contracts;
+﻿using Contracts.Logs.DTOs;
 using MassTransit;
-using StaffControl.Infrastructure.Interfaces;
 
-namespace StaffControl.Infrastructure.Messaging
+namespace Contracts.Logs.Messaging
 {
     public class LogMessagePublisher : IRabbitMqLogPublisher
     {
-        IPublishEndpoint _publishEndpoint;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public LogMessagePublisher(IPublishEndpoint publishEndpoint)
         {
             _publishEndpoint = publishEndpoint;
         }
-        public async void SendLog(LogMessageDto log)
+
+        public async Task SendLog(LogMessageDto log)
         {
             try
             {

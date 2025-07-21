@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<LogDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddHostedService<RabbitMqLogConsumer>();
 builder.Services.AddScoped<LogMessageConsumer>();
 
 builder.Services.AddMassTransit(x =>

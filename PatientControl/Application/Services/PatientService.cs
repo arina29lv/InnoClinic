@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Contracts.Logs.Interfaces;
 using PatientControl.Application.DTOs;
 using PatientControl.Application.Interfaces;
 using PatientControl.Domain.Entities;
 using PatientControl.Domain.Interfaces;
-using PatientControl.Infrastructure.Interfaces;
 
 namespace PatientControl.Application.Services
 {
