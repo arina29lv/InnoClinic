@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StaffControl.Application.Interfaces;
@@ -27,12 +28,25 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = false;
 });
 
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
+});
+builder.Services.AddScoped<IRabbitMqLogPublisher, LogMessagePublisher>();
+builder.Services.AddScoped<ILogService, LogService>();
+
+
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
 builder.Services.AddScoped<IReceptionistService, ReceptonistService>();
-builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
-builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

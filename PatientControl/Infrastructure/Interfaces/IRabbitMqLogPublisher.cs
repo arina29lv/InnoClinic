@@ -1,4 +1,4 @@
-﻿using PatientControl.Application.DTOs.Logs;
+﻿using Contracts;
 
 namespace PatientControl.Infrastructure.Interfaces
 {

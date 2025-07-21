@@ -1,4 +1,4 @@
-﻿using StaffControl.Application.DTOs.Logs;
+﻿using Contracts;
 using StaffControl.Infrastructure.Interfaces;
 
 namespace StaffControl.Infrastructure.Services
@@ -19,6 +19,7 @@ namespace StaffControl.Infrastructure.Services
             var log = new LogMessageDto
             {
                 Level = "INFO",
+                MicroserviceName = "StaffControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
@@ -32,6 +33,7 @@ namespace StaffControl.Infrastructure.Services
             var log = new LogMessageDto
             {
                 Level = "WARNING",
+                MicroserviceName = "StaffControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
@@ -45,6 +47,7 @@ namespace StaffControl.Infrastructure.Services
             var log = new LogMessageDto
             {
                 Level = "ERROR",
+                MicroserviceName = "StaffControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName

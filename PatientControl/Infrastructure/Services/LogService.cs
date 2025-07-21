@@ -1,4 +1,4 @@
-﻿using PatientControl.Application.DTOs.Logs;
+﻿using Contracts;
 using PatientControl.Infrastructure.Interfaces;
 
 namespace PatientControl.Infrastructure.Services
@@ -19,6 +19,7 @@ namespace PatientControl.Infrastructure.Services
             var log = new LogMessageDto
             {
                 Level = "INFO",
+                MicroserviceName = "PatientControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
@@ -32,6 +33,7 @@ namespace PatientControl.Infrastructure.Services
             var log = new LogMessageDto
             {
                 Level = "WARNING",
+                MicroserviceName = "PatientControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
@@ -45,6 +47,7 @@ namespace PatientControl.Infrastructure.Services
             var log = new LogMessageDto
             {
                 Level = "ERROR",
+                MicroserviceName = "PatientControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName

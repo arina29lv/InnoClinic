@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientControl.Application.Interfaces;
@@ -27,10 +28,23 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = false;
 });
 
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientService, PatientService>();
-builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
+});
+builder.Services.AddScoped<IRabbitMqLogPublisher, LogMessagePublisher>();
 builder.Services.AddScoped<ILogService, LogService>();
+
+
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPatientService, PatientService>();;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

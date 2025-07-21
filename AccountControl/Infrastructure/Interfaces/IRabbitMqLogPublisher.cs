@@ -1,4 +1,4 @@
-﻿using AccountControl.Application.DTOs.Logs;
+﻿using Contracts;
 
 namespace AccountControl.Infrastructure.Interfaces
 {

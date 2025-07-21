@@ -1,4 +1,4 @@
-﻿using StaffControl.Application.DTOs.Logs;
+﻿using Contracts;
 
 namespace StaffControl.Infrastructure.Interfaces
 {

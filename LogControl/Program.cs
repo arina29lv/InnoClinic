@@ -4,6 +4,7 @@ using LogControl.Domain.Interfaces;
 using LogControl.Infrastructure.Messaging;
 using LogControl.Infrastructure.Persistence;
 using LogControl.Infrastructure.Repositories;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<LogDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHostedService<RabbitMqLogConsumer>();
+//builder.Services.AddHostedService<RabbitMqLogConsumer>();
+builder.Services.AddScoped<LogMessageConsumer>();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<LogMessageConsumer>();
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("log_queue", e =>
+        {
+            e.ConfigureConsumer<LogMessageConsumer>(context);
+        });
+    });
+});
 
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ILogService, LogService>();

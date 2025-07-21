@@ -88,6 +88,5 @@ namespace PatientControl.Application.Services
 
             return patient;
         }
-
     }
 }

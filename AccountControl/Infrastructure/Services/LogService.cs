@@ -1,5 +1,5 @@
-﻿using AccountControl.Application.DTOs.Logs;
-using AccountControl.Infrastructure.Interfaces;
+﻿using AccountControl.Infrastructure.Interfaces;
+using Contracts;
 
 namespace AccountControl.Infrastructure.Service
 {
@@ -19,6 +19,7 @@ namespace AccountControl.Infrastructure.Service
             var log = new LogMessageDto
             {
                 Level = "INFO",
+                MicroserviceName = "AccountControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
@@ -32,6 +33,7 @@ namespace AccountControl.Infrastructure.Service
             var log = new LogMessageDto
             {
                 Level = "WARNING",
+                MicroserviceName = "AccountControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
@@ -45,6 +47,7 @@ namespace AccountControl.Infrastructure.Service
             var log = new LogMessageDto
             {
                 Level = "ERROR",
+                MicroserviceName = "AccountControl",
                 Message = message,
                 Exception = exception,
                 Environment = _environment.EnvironmentName
