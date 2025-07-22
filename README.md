@@ -8,15 +8,15 @@
 
 - **Backend Language**: C# (.NET 8)
 - **Backend Framework**: ASP.NET Core Web API
-- **Frontend Framework**: React (planned)
-- **Architecture**: Domain-Driven Design (DDD), Clean Architecture, Onion Architecture
+- **Frontend Framework**: React
+- **Architecture**: DDD, Clean Architecture, Onion Architecture
 - **Data Access**: Entity Framework Core (Code First)
 - **Database**: SQL Server (Dockerized)
 - **Validation**: FluentValidation
 - **Messaging**: RabbitMQ with MassTransit (for centralized logging)
 - **CQRS / Mediator Pattern**: MediatR
 - **Logging**: Asynchronous event-based logging via RabbitMQ to a dedicated logging microservice
-- **Authentication & Authorization**: JWT (planned), role-based access control
+- **Authentication & Authorization**: JWT, role-based access control
 - **Containers & Orchestration**: Docker, Docker Compose
 
 ---
@@ -55,8 +55,7 @@ docker-compose up --build
 
 ## Author
 
-**Arina Liubas**
-Software Engineer at Innowice  
+**Arina Liubas** - Software Engineer at Innowice  
 © 2025
 
 --- 
