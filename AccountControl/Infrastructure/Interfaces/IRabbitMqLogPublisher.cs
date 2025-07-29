@@ -1,6 +1,6 @@
 ﻿using Contracts.Logs.DTOs;
 
-namespace Contracts.Logs.Messaging
+namespace AccountControl.Infrastructure.Interfaces
 {
     public interface IRabbitMqLogPublisher
     {

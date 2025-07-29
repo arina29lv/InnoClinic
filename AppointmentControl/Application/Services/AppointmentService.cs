@@ -2,8 +2,8 @@
 using AppointmentControl.Application.Interfaces;
 using AppointmentControl.Domain.Entities;
 using AppointmentControl.Domain.Interfaces;
+using AppointmentControl.Infrastructure.Interfaces;
 using AutoMapper;
-using Contracts.Logs.Interfaces;
 
 namespace AppointmentControl.Application.Services
 {

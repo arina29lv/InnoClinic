@@ -1,9 +1,7 @@
 ﻿using Contracts.Logs.DTOs;
-using Contracts.Logs.Interfaces;
-using Contracts.Logs.Messaging;
-using Microsoft.Extensions.Hosting;
+using StaffControl.Infrastructure.Interfaces;
 
-namespace Contracts.Logs.Services
+namespace StaffControl.Infrastructure.Services
 {
     public class LogService : ILogService
     {

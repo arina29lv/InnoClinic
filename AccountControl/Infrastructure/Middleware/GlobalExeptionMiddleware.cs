@@ -1,4 +1,4 @@
-﻿using Contracts.Logs.Interfaces;
+﻿using AccountControl.Infrastructure.Interfaces;
 using System.Net;
 using System.Text.Json;
 

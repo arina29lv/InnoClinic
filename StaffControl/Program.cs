@@ -1,6 +1,3 @@
-using Contracts.Logs.Interfaces;
-using Contracts.Logs.Messaging;
-using Contracts.Logs.Services;
 using Contracts.Settings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -13,9 +10,12 @@ using StaffControl.Application.Mappings;
 using StaffControl.Application.Services;
 using StaffControl.Application.Validators.DoctorValidator;
 using StaffControl.Domain.Interfaces;
+using StaffControl.Infrastructure.Interfaces;
+using StaffControl.Infrastructure.Messaging;
 using StaffControl.Infrastructure.Middleware;
 using StaffControl.Infrastructure.Persistence;
 using StaffControl.Infrastructure.Repositories;
+using StaffControl.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +46,7 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
-builder.Services.AddScoped<IRabbitMqLogPublisher, LogMessagePublisher>();
+builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
 builder.Services.AddScoped<ILogService>(sp =>
     new LogService(
         sp.GetRequiredService<IRabbitMqLogPublisher>(),

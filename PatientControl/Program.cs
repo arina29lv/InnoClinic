@@ -1,6 +1,6 @@
-using Contracts.Logs.Interfaces;
-using Contracts.Logs.Messaging;
-using Contracts.Logs.Services;
+using PatientControl.Infrastructure.Interfaces;
+using PatientControl.Infrastructure.Messaging;
+using PatientControl.Infrastructure.Services;
 using Contracts.Settings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -46,7 +46,7 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
-builder.Services.AddScoped<IRabbitMqLogPublisher, LogMessagePublisher>();
+builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
 builder.Services.AddScoped<ILogService>(sp =>
     new LogService(
         sp.GetRequiredService<IRabbitMqLogPublisher>(),
