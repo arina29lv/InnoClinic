@@ -4,26 +4,26 @@ using System.Text.Json;
 
 namespace AppointmentControl.Infrastructure.Middleware
 {
-    public class GlobalExeptionMiddleware
+    public class GlobalExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogService _logger;
 
-        public GlobalExeptionMiddleware(RequestDelegate next)
+        public GlobalExceptionMiddleware(RequestDelegate next, ILogService logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var logService = context.RequestServices.GetRequiredService<ILogService>();
-
             try
             {
-                await _next(context);
+                await _next(context).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                logService.LogError(
+                _logger.LogError(
                     $"Exception caught in middleware. Path: {context.Request.Path}",
                     ex.ToString()
                 );
@@ -37,7 +37,7 @@ namespace AppointmentControl.Infrastructure.Middleware
                     message = ex.Message
                 };
 
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response)).ConfigureAwait(false);
             }
         }
     }

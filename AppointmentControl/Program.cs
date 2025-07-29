@@ -1,8 +1,7 @@
 using AppointmentControl.Application.Interfaces;
 using AppointmentControl.Application.Mappings;
 using AppointmentControl.Application.Services;
-using AppointmentControl.Domain.Interfaces;
-using AppointmentControl.Infrastructure.Converters;
+using AppointmentControl.Domain.Interfaces; 
 using AppointmentControl.Infrastructure.Persistence;
 using AppointmentsControl.Infrastructure.Repositories;
 using Contracts.Logs.Interfaces;
@@ -46,14 +45,8 @@ builder.Services.AddScoped<ILogService>(sp =>
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
-builder.Services
-    .AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-        options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
-    });
 
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

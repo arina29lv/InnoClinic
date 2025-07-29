@@ -42,7 +42,7 @@ namespace AppointmentControl.Application.Services
             var appointment = _mapper.Map<Appointment>(createAppointmentDto);
 
             await _appointmentRepository.AddAsync(appointment);
-            _logger.LogInfo($"Appointment with ID {appointment.Id} was created for patient {appointment.PatientId} and doctor {appointment.DoctorId} on {appointment.Date} at {appointment.Time}.");
+            _logger.LogInfo($"Appointment with ID {appointment.Id} was created for patient {appointment.PatientId} and doctor {appointment.DoctorId} on {appointment.DateTime}.");
         }
 
         public async Task<bool> DeleteAsync(Guid id)

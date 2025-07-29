@@ -26,19 +26,8 @@ namespace AppointmentControl.Infrastructure.Persistence
                 entity.Property(a => a.ServiceId)
                 .IsRequired();
 
-                entity.Property(a => a.Date)
-                .IsRequired()
-                .HasConversion(
-                    v => v.ToDateTime(TimeOnly.MinValue),
-                    v => DateOnly.FromDateTime(v)
-                    );
-
-                entity.Property(a => a.Time)
-                .IsRequired()
-                .HasConversion(
-                    v => v.ToTimeSpan(),
-                    v => TimeOnly.FromTimeSpan(v)
-                    );
+                entity.Property(a => a.DateTime)
+                .IsRequired();
 
                 entity.Property(a => a.IsApproved)
                 .IsRequired();
