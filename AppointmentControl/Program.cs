@@ -1,12 +1,12 @@
 using AppointmentControl.Application.Interfaces;
 using AppointmentControl.Application.Mappings;
 using AppointmentControl.Application.Services;
-using AppointmentControl.Domain.Interfaces; 
+using AppointmentControl.Domain.Interfaces;
+using AppointmentControl.Infrastructure.Interfaces;
+using AppointmentControl.Infrastructure.Messaging;
 using AppointmentControl.Infrastructure.Persistence;
+using AppointmentControl.Infrastructure.Services;
 using AppointmentsControl.Infrastructure.Repositories;
-using Contracts.Logs.Interfaces;
-using Contracts.Logs.Messaging;
-using Contracts.Logs.Services;
 using Contracts.Settings;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +34,7 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
-builder.Services.AddScoped<IRabbitMqLogPublisher, LogMessagePublisher>();
+builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
 builder.Services.AddScoped<ILogService>(sp =>
     new LogService(
         sp.GetRequiredService<IRabbitMqLogPublisher>(),

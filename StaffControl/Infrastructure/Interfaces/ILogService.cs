@@ -1,4 +1,4 @@
-﻿namespace Contracts.Logs.Interfaces
+﻿namespace StaffControl.Infrastructure.Interfaces
 {
     public interface ILogService
     {

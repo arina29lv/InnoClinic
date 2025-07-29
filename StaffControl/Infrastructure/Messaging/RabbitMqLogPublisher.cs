@@ -1,13 +1,14 @@
 ﻿using Contracts.Logs.DTOs;
 using MassTransit;
+using StaffControl.Infrastructure.Interfaces;
 
-namespace Contracts.Logs.Messaging
+namespace StaffControl.Infrastructure.Messaging
 {
-    public class LogMessagePublisher : IRabbitMqLogPublisher
+    public class RabbitMqLogPublisher : IRabbitMqLogPublisher
     {
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public LogMessagePublisher(IPublishEndpoint publishEndpoint)
+        public RabbitMqLogPublisher(IPublishEndpoint publishEndpoint)
         {
             _publishEndpoint = publishEndpoint;
         }
