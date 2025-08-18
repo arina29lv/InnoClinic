@@ -1,3 +1,4 @@
+using System;
 using AppointmentControl.Application.Interfaces;
 using AppointmentControl.Application.Mappings;
 using AppointmentControl.Application.Services;
@@ -15,7 +16,12 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppointmentDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("DefaultConnection"),
+         sql => sql.EnableRetryOnFailure( 
+             maxRetryCount: 5,
+             maxRetryDelay: TimeSpan.FromSeconds(10),
+             errorNumbersToAdd: null)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -41,10 +47,8 @@ builder.Services.AddScoped<ILogService>(sp =>
         sp.GetRequiredService<IHostEnvironment>(),
         "AppointmentControl"));
 
-
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -56,6 +60,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppointmentDbContext>();
+    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
 }
 
 app.MapControllers();

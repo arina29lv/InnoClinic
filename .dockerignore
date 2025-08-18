@@ -1,0 +1,23 @@
+# .NET build junk
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+**/TestResults/
+
+# IDE
+.vs/
+.idea/
+*.suo
+*.user
+
+# VCS & OS
+.git/
+.gitignore
+.DS_Store
+
+# Node 
+**/node_modules/
+
+# Env files
+.env

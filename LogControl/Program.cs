@@ -1,3 +1,4 @@
+using System;
 using LogControl.Application.Interfaces;
 using LogControl.Application.Service;
 using LogControl.Domain.Interfaces;
@@ -10,7 +11,12 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<LogDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("DefaultConnection"),
+         sql => sql.EnableRetryOnFailure( 
+             maxRetryCount: 5,
+             maxRetryDelay: TimeSpan.FromSeconds(10),
+             errorNumbersToAdd: null)));
 
 builder.Services.AddScoped<LogMessageConsumer>();
 
@@ -19,7 +25,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<LogMessageConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -45,6 +51,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LogDbContext>();
+    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
 }
 
 app.MapControllers();
