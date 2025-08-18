@@ -1,0 +1,194 @@
+name: innoclinic-stack
+
+volumes:
+  patients_data:
+  staff_data:
+  account_data:
+  appointments_data:
+  logs_data:
+
+services:
+  # ===== infra =====
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ===== databases =====
+  patients-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "ITGenius2025"
+      MSSQL_PID: "Express"
+    ports:
+      - "1435:1433"
+    volumes:
+      - patients_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  staff-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "ITGenius2025"
+      MSSQL_PID: "Express"
+    ports:
+      - "1436:1433"
+    volumes:
+      - staff_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  account-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "ITGenius2025"
+      MSSQL_PID: "Express"
+    ports:
+      - "1437:1433"
+    volumes:
+      - account_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  appointments-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "ITGenius2025"
+      MSSQL_PID: "Express"
+    ports:
+      - "1438:1433"
+    volumes:
+      - appointments_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  logs-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "ITGenius2025"
+      MSSQL_PID: "Express"
+    ports:
+      - "1439:1433"
+    volumes:
+      - logs_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # ===== services =====
+  patientcontrol:
+    image: inno/patientcontrol:1.0.0
+    build:
+      context: .
+      dockerfile: PatientControl/Dockerfile
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      patients-db: { condition: service_healthy }
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=patients-db,1433;Database=PatientsDb;User Id=sa;Password=ITGenius2025;TrustServerCertificate=True;"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__Username: "guest"
+      RabbitMq__Password: "guest"
+    ports:
+      - "8080:8080"
+
+  staffcontrol:
+    image: inno/staffcontrol:1.0.0
+    build:
+      context: .
+      dockerfile: StaffControl/Dockerfile
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      staff-db: { condition: service_healthy }
+    environment:
+      ASPNETCORE_URLS: "http://+:8081"
+      ConnectionStrings__DefaultConnection: "Server=staff-db,1433;Database=StaffDb;User Id=sa;Password=ITGenius2025;TrustServerCertificate=True;"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__Username: "guest"
+      RabbitMq__Password: "guest"
+    ports:
+      - "8081:8081"
+
+  accountcontrol:
+    image: inno/accountcontrol:1.0.0
+    build:
+      context: .
+      dockerfile: AccountControl/Dockerfile
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      account-db: { condition: service_healthy }
+    environment:
+      ASPNETCORE_URLS: "http://+:8082"
+      ConnectionStrings__DefaultConnection: "Server=account-db,1433;Database=AccountDb;User Id=sa;Password=ITGenius2025;TrustServerCertificate=True;"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__Username: "guest"
+      RabbitMq__Password: "guest"
+    ports:
+      - "8082:8082"
+
+  appointmentcontrol:
+    image: inno/appointmentcontrol:1.0.0
+    build:
+      context: .
+      dockerfile: AppointmentControl/Dockerfile
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      appointments-db: { condition: service_healthy }
+    environment:
+      ASPNETCORE_URLS: "http://+:8083"
+      ConnectionStrings__DefaultConnection: "Server=appointments-db,1433;Database=AppointmentsDb;User Id=sa;Password=ITGenius2025;TrustServerCertificate=True;"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__Username: "guest"
+      RabbitMq__Password: "guest"
+    ports:
+      - "8083:8083"
+
+  logcontrol:
+    image: inno/logcontrol:1.0.0
+    build:
+      context: .
+      dockerfile: LogControl/Dockerfile
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      logs-db: { condition: service_healthy }
+    environment:
+      ASPNETCORE_URLS: "http://+:8084"
+      ConnectionStrings__DefaultConnection: "Server=logs-db,1433;Database=LogsDb;User Id=sa;Password=ITGenius2025;TrustServerCertificate=True;"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__Username: "guest"
+      RabbitMq__Password: "guest"
+    ports:
+      - "8084:8084"

@@ -1,3 +1,4 @@
+﻿using System; 
 using PatientControl.Infrastructure.Interfaces;
 using PatientControl.Infrastructure.Messaging;
 using PatientControl.Infrastructure.Services;
@@ -19,8 +20,13 @@ using PatientControl.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PatientDbContext>(options => 
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<PatientDbContext>(options =>
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("DefaultConnection"),
+         sql => sql.EnableRetryOnFailure(
+             maxRetryCount: 5,
+             maxRetryDelay: TimeSpan.FromSeconds(10),
+             errorNumbersToAdd: null)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -55,7 +61,7 @@ builder.Services.AddScoped<ILogService>(sp =>
 
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientService, PatientService>();;
+builder.Services.AddScoped<IPatientService, PatientService>(); ;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -70,6 +76,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<GlobalExeptionMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PatientDbContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
+}
 
 app.MapControllers();
 app.Run();

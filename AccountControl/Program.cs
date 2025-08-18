@@ -1,3 +1,4 @@
+using System;
 using AccountControl.Application.Interfaces;
 using AccountControl.Application.Mappings;
 using AccountControl.Application.Services;
@@ -20,7 +21,12 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AccountDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("DefaultConnection"),
+         sql => sql.EnableRetryOnFailure( 
+             maxRetryCount: 5,
+             maxRetryDelay: TimeSpan.FromSeconds(10),
+             errorNumbersToAdd: null)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -53,7 +59,6 @@ builder.Services.AddScoped<ILogService>(sp =>
         sp.GetRequiredService<IHostEnvironment>(),
         "AccountControl"));
 
-
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
@@ -70,6 +75,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<GlobalExeptionMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AccountDbContext>();
+    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
+}
 
 app.MapControllers();
 app.Run();

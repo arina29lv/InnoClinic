@@ -1,3 +1,4 @@
+using System; 
 using Contracts.Settings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -19,8 +20,13 @@ using StaffControl.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<StaffDbContext>(options => 
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<StaffDbContext>(options =>
+     options.UseSqlServer(
+         builder.Configuration.GetConnectionString("DefaultConnection"),
+         sql => sql.EnableRetryOnFailure( 
+             maxRetryCount: 5,
+             maxRetryDelay: TimeSpan.FromSeconds(10),
+             errorNumbersToAdd: null)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -53,7 +59,6 @@ builder.Services.AddScoped<ILogService>(sp =>
         sp.GetRequiredService<IHostEnvironment>(),
         "StaffControl"));
 
-
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
@@ -72,6 +77,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<GlobalExeptionMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<StaffDbContext>();
+    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
+}
 
 app.MapControllers();
 app.Run();
