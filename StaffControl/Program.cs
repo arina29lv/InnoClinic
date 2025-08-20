@@ -1,5 +1,5 @@
-using System; 
 using Contracts.Settings;
+using Contracts.Startup;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
@@ -17,6 +17,7 @@ using StaffControl.Infrastructure.Middleware;
 using StaffControl.Infrastructure.Persistence;
 using StaffControl.Infrastructure.Repositories;
 using StaffControl.Infrastructure.Services;
+using System; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,8 +81,20 @@ app.UseMiddleware<GlobalExeptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<StaffDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
+    var serviceProvider = scope.ServiceProvider;
+
+    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
+    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+
+    var db = serviceProvider.GetRequiredService<StaffDbContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
 }
 
 app.MapControllers();

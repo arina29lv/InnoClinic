@@ -3,6 +3,7 @@ using PatientControl.Infrastructure.Interfaces;
 using PatientControl.Infrastructure.Messaging;
 using PatientControl.Infrastructure.Services;
 using Contracts.Settings;
+using Contracts.Startup;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
@@ -79,7 +80,12 @@ app.UseMiddleware<GlobalExeptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<PatientDbContext>();
+    var serviceProvider = scope.ServiceProvider;
+
+    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
+    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+
+    var db = serviceProvider.GetRequiredService<PatientDbContext>();
     try
     {
         db.Database.Migrate();

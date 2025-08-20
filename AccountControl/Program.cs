@@ -1,4 +1,3 @@
-using System;
 using AccountControl.Application.Interfaces;
 using AccountControl.Application.Mappings;
 using AccountControl.Application.Services;
@@ -11,12 +10,14 @@ using AccountControl.Infrastructure.Persistence;
 using AccountControl.Infrastructure.Repositories;
 using AccountControl.Infrastructure.Services;
 using Contracts.Settings;
+using Contracts.Startup;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,8 +79,20 @@ app.UseMiddleware<GlobalExeptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AccountDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
+    var serviceProvider = scope.ServiceProvider;
+
+    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
+    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+
+    var db = serviceProvider.GetRequiredService<AccountDbContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
 }
 
 app.MapControllers();

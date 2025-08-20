@@ -1,4 +1,4 @@
-using System;
+using Contracts.Startup;
 using LogControl.Application.Interfaces;
 using LogControl.Application.Service;
 using LogControl.Domain.Interfaces;
@@ -7,6 +7,7 @@ using LogControl.Infrastructure.Persistence;
 using LogControl.Infrastructure.Repositories;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,8 +56,20 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<LogDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
+    var serviceProvider = scope.ServiceProvider;
+
+    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
+    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+
+    var db = serviceProvider.GetRequiredService<LogDbContext>();
+    try 
+    { 
+        db.Database.Migrate(); 
+    } 
+    catch 
+    { 
+        db.Database.EnsureCreated(); 
+    }
 }
 
 app.MapControllers();

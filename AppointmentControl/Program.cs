@@ -1,4 +1,3 @@
-using System;
 using AppointmentControl.Application.Interfaces;
 using AppointmentControl.Application.Mappings;
 using AppointmentControl.Application.Services;
@@ -9,9 +8,11 @@ using AppointmentControl.Infrastructure.Persistence;
 using AppointmentControl.Infrastructure.Services;
 using AppointmentsControl.Infrastructure.Repositories;
 using Contracts.Settings;
+using Contracts.Startup;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,8 +65,20 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppointmentDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
+    var serviceProvider = scope.ServiceProvider;
+
+    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
+    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+
+    var db = serviceProvider.GetRequiredService<AppointmentDbContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
 }
 
 app.MapControllers();
