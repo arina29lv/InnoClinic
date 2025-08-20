@@ -1,9 +1,7 @@
-﻿using System; 
-using PatientControl.Infrastructure.Interfaces;
+﻿using PatientControl.Infrastructure.Interfaces;
 using PatientControl.Infrastructure.Messaging;
 using PatientControl.Infrastructure.Services;
 using Contracts.Settings;
-using Contracts.Startup;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
@@ -18,6 +16,7 @@ using PatientControl.Domain.Interfaces;
 using PatientControl.Infrastructure.Middleware;
 using PatientControl.Infrastructure.Persistence;
 using PatientControl.Infrastructure.Repositories;
+using LogControl.Infrastructure.StartupCheck;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,20 +79,13 @@ app.UseMiddleware<GlobalExeptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var serviceProvider = scope.ServiceProvider;
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
-    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+    await StartupChecks.ValidateSqlServerAsync(
+        config.GetConnectionString("DefaultConnection"));
 
-    var db = serviceProvider.GetRequiredService<PatientDbContext>();
-    try
-    {
-        db.Database.Migrate();
-    }
-    catch
-    {
-        db.Database.EnsureCreated();
-    }
+    var rabbit = scope.ServiceProvider.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    await StartupChecks.ValidateRabbitMqAsync(rabbit.Host, rabbit.Username, rabbit.Password);
 }
 
 app.MapControllers();

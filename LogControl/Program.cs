@@ -1,13 +1,14 @@
-using Contracts.Startup;
+using Contracts.Settings;
 using LogControl.Application.Interfaces;
 using LogControl.Application.Service;
 using LogControl.Domain.Interfaces;
 using LogControl.Infrastructure.Messaging;
 using LogControl.Infrastructure.Persistence;
 using LogControl.Infrastructure.Repositories;
+using LogControl.Infrastructure.StartupCheck;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,20 +57,13 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var serviceProvider = scope.ServiceProvider;
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
-    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+    await StartupChecks.ValidateSqlServerAsync(
+        config.GetConnectionString("DefaultConnection"));
 
-    var db = serviceProvider.GetRequiredService<LogDbContext>();
-    try 
-    { 
-        db.Database.Migrate(); 
-    } 
-    catch 
-    { 
-        db.Database.EnsureCreated(); 
-    }
+    var rabbit = scope.ServiceProvider.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    await StartupChecks.ValidateRabbitMqAsync(rabbit.Host, rabbit.Username, rabbit.Password);
 }
 
 app.MapControllers();

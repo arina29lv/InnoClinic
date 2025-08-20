@@ -8,11 +8,10 @@ using AppointmentControl.Infrastructure.Persistence;
 using AppointmentControl.Infrastructure.Services;
 using AppointmentsControl.Infrastructure.Repositories;
 using Contracts.Settings;
-using Contracts.Startup;
+using LogControl.Infrastructure.StartupCheck;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,20 +64,13 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var serviceProvider = scope.ServiceProvider;
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
-    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+    await StartupChecks.ValidateSqlServerAsync(
+        config.GetConnectionString("DefaultConnection"));
 
-    var db = serviceProvider.GetRequiredService<AppointmentDbContext>();
-    try
-    {
-        db.Database.Migrate();
-    }
-    catch
-    {
-        db.Database.EnsureCreated();
-    }
+    var rabbit = scope.ServiceProvider.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    await StartupChecks.ValidateRabbitMqAsync(rabbit.Host, rabbit.Username, rabbit.Password);
 }
 
 app.MapControllers();

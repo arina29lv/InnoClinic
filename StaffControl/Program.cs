@@ -1,7 +1,7 @@
 using Contracts.Settings;
-using Contracts.Startup;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using LogControl.Infrastructure.StartupCheck;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +17,6 @@ using StaffControl.Infrastructure.Middleware;
 using StaffControl.Infrastructure.Persistence;
 using StaffControl.Infrastructure.Repositories;
 using StaffControl.Infrastructure.Services;
-using System; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,20 +80,13 @@ app.UseMiddleware<GlobalExeptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var serviceProvider = scope.ServiceProvider;
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-    await StartupCheck.ValidateSqlServerAsync(serviceProvider, "DefaultConnection");
-    await StartupCheck.ValidateRabbitMqAsync(serviceProvider);
+    await StartupChecks.ValidateSqlServerAsync(
+        config.GetConnectionString("DefaultConnection"));
 
-    var db = serviceProvider.GetRequiredService<StaffDbContext>();
-    try
-    {
-        db.Database.Migrate();
-    }
-    catch
-    {
-        db.Database.EnsureCreated();
-    }
+    var rabbit = scope.ServiceProvider.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    await StartupChecks.ValidateRabbitMqAsync(rabbit.Host, rabbit.Username, rabbit.Password);
 }
 
 app.MapControllers();
