@@ -8,6 +8,7 @@ using LogControl.Infrastructure.Repositories;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<LogDbContext>(options =>
@@ -38,25 +39,36 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
+
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LogDbContext>();
+    try 
+    { 
+        db.Database.Migrate(); 
+    } 
+    catch 
+    { 
+        db.Database.EnsureCreated(); 
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<LogDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
 }
 
 app.MapControllers();

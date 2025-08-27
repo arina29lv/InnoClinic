@@ -1,11 +1,13 @@
 ﻿using AppointmentControl.Application.DTOs;
 using AppointmentControl.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentControl.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
@@ -16,6 +18,7 @@ namespace AppointmentControl.Presentation.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Receptionist, Doctor")]
         public async Task<IActionResult> GetAllAppointments()
         {
             var appointments = await _appointmentService.GetAllAsync();
@@ -23,6 +26,7 @@ namespace AppointmentControl.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Receptionist, Doctor")]
         public async Task<IActionResult> GetAppointmentById(Guid id)
         {
             var appointment = await _appointmentService.GetByIdAsync(id);
@@ -32,6 +36,7 @@ namespace AppointmentControl.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> CreateAppointment([FromBody] CreateAppointmentDto createAppointmentDto)
         {
             await _appointmentService.AddAsync(createAppointmentDto);
@@ -39,6 +44,7 @@ namespace AppointmentControl.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> DeleteAppointment(Guid id)
         {
             return await _appointmentService.DeleteAsync(id)
@@ -47,6 +53,7 @@ namespace AppointmentControl.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> UpdateAppointment(Guid id, [FromBody] UpdateAppointmentDto updateAppointmentDto)
         {
             return await _appointmentService.UpdateAsync(updateAppointmentDto, id)

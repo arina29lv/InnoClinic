@@ -1,9 +1,9 @@
-﻿namespace Contracts.Settings
+﻿namespace Contracts.DTOs.Auth
 {
-    public class RabbitMqSettings
+    public sealed class RegisterRequestDto
     {
-        public string Host { get; set; } = default!;
         public string Username { get; set; } = default!;
         public string Password { get; set; } = default!;
+        public string Role { get; set; } = "Patient";
     }
 }

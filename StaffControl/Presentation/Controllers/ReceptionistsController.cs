@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StaffControl.Application.DTOs.ReceptionistDTOs;
 using StaffControl.Application.Interfaces;
 
@@ -6,6 +7,7 @@ namespace StaffControl.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ReceptionistsController : ControllerBase
     {
         private readonly IReceptionistService _receptionistService;
@@ -16,6 +18,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> GetAllReceptionists()
         {
             var receptionist = await _receptionistService.GetAllAsync();
@@ -23,6 +26,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> GetReceptionistById(Guid id)
         {
             var receptionist = await _receptionistService.GetByIdAsync(id);
@@ -32,6 +36,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> CreateReceptionist([FromBody] CreateReceptionistDto createReceptionistDto)
         {
             await _receptionistService.AddAsync(createReceptionistDto);
@@ -39,6 +44,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> DeleteReceptionist(Guid id)
         {
             return await _receptionistService.DeleteAsync(id)
@@ -47,6 +53,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> UpdateReceptionist(Guid id, [FromBody] UpdateReceptionistDto updateReceptionistDto)
         {
             return await _receptionistService.UpdateAsync(updateReceptionistDto, id)

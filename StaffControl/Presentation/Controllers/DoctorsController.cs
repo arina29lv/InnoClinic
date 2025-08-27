@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StaffControl.Application.DTOs.DoctorDTOs;
 using StaffControl.Application.Interfaces;
 
@@ -6,6 +7,7 @@ namespace StaffControl.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class DoctorsController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
@@ -16,6 +18,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles ="Receptionist")]
         public async Task<IActionResult> GetAllDoctors()
         {
             var doctors = await _doctorService.GetAllAsync();
@@ -23,6 +26,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> GetDoctorById(Guid id)
         {
             var doctor = await _doctorService.GetByIdAsync(id);
@@ -32,6 +36,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorDto createDoctorDto)
         {
             await _doctorService.AddAsync(createDoctorDto);
@@ -39,6 +44,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> DeleteDoctor(Guid id)
         {
             return await _doctorService.DeleteAsync(id)
@@ -47,6 +53,7 @@ namespace StaffControl.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> UpdateDoctor(Guid id, [FromBody] UpdateDoctorDto updateDoctorDto)
         {
             return await _doctorService.UpdateAsync(updateDoctorDto, id)

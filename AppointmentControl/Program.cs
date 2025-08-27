@@ -1,4 +1,3 @@
-using System;
 using AppointmentControl.Application.Interfaces;
 using AppointmentControl.Application.Mappings;
 using AppointmentControl.Application.Services;
@@ -10,8 +9,13 @@ using AppointmentControl.Infrastructure.Services;
 using AppointmentsControl.Infrastructure.Repositories;
 using Contracts.Settings;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,14 +51,68 @@ builder.Services.AddScoped<ILogService>(sp =>
         sp.GetRequiredService<IHostEnvironment>(),
         "AppointmentControl"));
 
+var jwt = builder.Configuration.GetSection("Jwt");
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwt["Issuer"],
+            ValidAudience = jwt["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["SigningKey"]!))
+        };
+    });
+builder.Services.AddAuthorization();
+
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AppointmentControl API", Version = "v1" });
+
+    var scheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter the token in the format: Bearer {token}"
+    };
+    c.AddSecurityDefinition("Bearer", scheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        [scheme] = Array.Empty<string>()
+    });
+});
+
+
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppointmentDbContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -62,11 +120,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppointmentDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
-}
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.Run();

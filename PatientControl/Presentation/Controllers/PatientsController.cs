@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PatientControl.Application.DTOs;
 using PatientControl.Application.Interfaces;
-using PatientControl.Domain.Entities;
 
 namespace PatientControl.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PatientsController : ControllerBase
     {
         private readonly IPatientService _patientService;
@@ -17,6 +18,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Receptionist, Doctor")]
         public async Task<IActionResult> GetAllPatients()
         {
             var patients = await _patientService.GetAllAsync();
@@ -24,6 +26,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Receptionist, Doctor")]
         public async Task<IActionResult> GetPatientById(Guid id)
         {
             var patient = await _patientService.GetByIdAsync(id);
@@ -33,6 +36,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> CreatePatient([FromBody] CreatePatientDto createPatientDto)
         {
             await _patientService.AddAsync(createPatientDto);
@@ -40,6 +44,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> DeletePatient(Guid id)
         {
             return await _patientService.DeleteAsync(id)
@@ -48,6 +53,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> UpdatePatient(Guid id, [FromBody] UpdatePatientDto updatePatientDto)
         {
             var patient = await _patientService.UpdateAsync(updatePatientDto, id);
@@ -57,6 +63,7 @@ namespace PatientControl.Presentation.Controllers
         }
 
         [HttpGet("account/{accountId}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IActionResult> GetPatientByAccountId(Guid accountId)
         {
             var patient = await _patientService.GetByAccountIdAsync(accountId);

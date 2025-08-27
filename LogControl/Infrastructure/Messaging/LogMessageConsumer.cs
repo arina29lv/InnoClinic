@@ -1,4 +1,5 @@
-﻿using Contracts.Logs.DTOs;
+﻿
+using Contracts.Logs.DTOs;
 using LogControl.Application.Interfaces;
 using LogControl.Domain.Entity;
 using MassTransit;

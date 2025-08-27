@@ -1,4 +1,3 @@
-using System; 
 using Contracts.Settings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -17,13 +16,18 @@ using StaffControl.Infrastructure.Middleware;
 using StaffControl.Infrastructure.Persistence;
 using StaffControl.Infrastructure.Repositories;
 using StaffControl.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<StaffDbContext>(options =>
      options.UseSqlServer(
          builder.Configuration.GetConnectionString("DefaultConnection"),
-         sql => sql.EnableRetryOnFailure( 
+         sql => sql.EnableRetryOnFailure(
              maxRetryCount: 5,
              maxRetryDelay: TimeSpan.FromSeconds(10),
              errorNumbersToAdd: null)));
@@ -59,16 +63,70 @@ builder.Services.AddScoped<ILogService>(sp =>
         sp.GetRequiredService<IHostEnvironment>(),
         "StaffControl"));
 
+var jwt = builder.Configuration.GetSection("Jwt");
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwt["Issuer"],
+            ValidAudience = jwt["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["SigningKey"]!))
+        };
+    });
+builder.Services.AddAuthorization();
+
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "StaffControl API", Version = "v1" });
+
+    var scheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter the token in the format: Bearer {token}"
+    };
+    c.AddSecurityDefinition("Bearer", scheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        [scheme] = Array.Empty<string>()
+    });
+});
+
+
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
 builder.Services.AddScoped<IReceptionistService, ReceptonistService>();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<StaffDbContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -78,11 +136,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExeptionMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<StaffDbContext>();
-    try { db.Database.Migrate(); } catch { db.Database.EnsureCreated(); }
-}
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
