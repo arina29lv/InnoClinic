@@ -1,4 +1,5 @@
-﻿using AuthControl.Application.Interfaces;
+﻿using AuthControl.Application.DTOs;
+using AuthControl.Application.Interfaces;
 using Contracts.DTOs.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,15 +42,18 @@ namespace AuthControl.Presentation.Controllers
 
         [HttpGet("me")]
         [Authorize]
-        public ActionResult<object> Me()
+        public ActionResult<UserInfoDto> Me()
         {
-            var name = User.Identity?.Name;
-            var role = User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirst("role")?.Value;
+            return Ok(new UserInfoDto
+            {
+                Id = Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString()),
+                Username = User.Identity?.Name ?? string.Empty,
+                Email = User.FindFirst("email")?.Value ?? string.Empty,
+                Roles = User.Claims
+                    .Where(c => c.Type == "role")
+                    .Select(c => c.Value)
+                    .ToList()
 
-            return Ok(new 
-            { 
-                Name = name, 
-                Role = role 
             });
         }
     }

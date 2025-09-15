@@ -1,5 +1,6 @@
 ﻿using AccountControl.Application.DTOs;
 using AccountControl.Application.Interfaces;
+using Contracts.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace AccountControl.Presentation.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Receptionist")]
+        [Authorize(Roles = Roles.Receptionist)]
         public async Task<IActionResult> GetAllAccounts()
         {
             var accounts = await _accountService.GetAllAsync();
@@ -26,7 +27,7 @@ namespace AccountControl.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Receptionist")]
+        [Authorize(Roles = Roles.Receptionist)]
         public async Task<IActionResult> GetAccountById(Guid id)
         {
             var account = await _accountService.GetByIdAsync(id);
@@ -36,7 +37,7 @@ namespace AccountControl.Presentation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Receptionist")]
+        [Authorize(Roles = Roles.Receptionist)]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountDto createAccountDto)
         {
             await _accountService.AddAsync(createAccountDto);
@@ -44,7 +45,7 @@ namespace AccountControl.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Receptionist")]
+        [Authorize(Roles = Roles.Receptionist)]
         public async Task<IActionResult> DeleteAccount(Guid id)
         {
             return await _accountService.DeleteAsync(id)
@@ -53,7 +54,7 @@ namespace AccountControl.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Receptionist")]
+        [Authorize(Roles = Roles.Receptionist)]
         public async Task<IActionResult> UpdateAccount(Guid id, [FromBody] UpdateAccountDto updateAccountDto)
         {
             var account = await _accountService.UpdateAsync(updateAccountDto, id);
