@@ -1,73 +1,37 @@
-﻿using System; 
-using PatientControl.Infrastructure.Interfaces;
-using PatientControl.Infrastructure.Messaging;
-using PatientControl.Infrastructure.Services;
-using Contracts.Settings;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using MassTransit;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PatientControl.Application.Interfaces;
+﻿using PatientControl.Application.Interfaces;
 using PatientControl.Application.Mappings;
 using PatientControl.Application.Services;
-using PatientControl.Application.Validators;
 using PatientControl.Domain.Interfaces;
 using PatientControl.Infrastructure.Middleware;
-using PatientControl.Infrastructure.Persistence;
 using PatientControl.Infrastructure.Repositories;
+using PatientControl.Infrastructure.Configurations;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PatientDbContext>(options =>
-     options.UseSqlServer(
-         builder.Configuration.GetConnectionString("DefaultConnection"),
-         sql => sql.EnableRetryOnFailure(
-             maxRetryCount: 5,
-             maxRetryDelay: TimeSpan.FromSeconds(10),
-             errorNumbersToAdd: null)));
+builder.AddDatabaseContext();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreatePatientValidator>();
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.SuppressModelStateInvalidFilter = false;
-});
+builder.AddValidation();
 
-builder.Services.Configure<RabbitMqSettings>(
-    builder.Configuration.GetSection("RabbitMq"));
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        var settings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+builder.AddRabbitMq();
 
-        cfg.Host(settings.Host, "/", h =>
-        {
-            h.Username(settings.Username);
-            h.Password(settings.Password);
-        });
-    });
-});
-builder.Services.AddScoped<IRabbitMqLogPublisher, RabbitMqLogPublisher>();
-builder.Services.AddScoped<ILogService>(sp =>
-    new LogService(
-        sp.GetRequiredService<IRabbitMqLogPublisher>(),
-        sp.GetRequiredService<IHostEnvironment>(),
-        "PatientControl"));
-
-
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientService, PatientService>(); ;
+builder.AddAuth();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.AddSwagger();
+
+
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+
 
 var app = builder.Build();
+
+app.UseDatabaseInitialization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -77,18 +41,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExeptionMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<PatientDbContext>();
-    try
-    {
-        db.Database.Migrate();
-    }
-    catch
-    {
-        db.Database.EnsureCreated();
-    }
-}
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.Run();

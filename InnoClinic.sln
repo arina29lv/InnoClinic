@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Cont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentControl", "AppointmentControl\AppointmentControl.csproj", "{09582D49-8D24-B3ED-CA98-BC878EE32A0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthControl", "AuthControl\AuthControl.csproj", "{241C5124-1E74-413E-9D41-7A06E4958F4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{09582D49-8D24-B3ED-CA98-BC878EE32A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09582D49-8D24-B3ED-CA98-BC878EE32A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09582D49-8D24-B3ED-CA98-BC878EE32A0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{241C5124-1E74-413E-9D41-7A06E4958F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{241C5124-1E74-413E-9D41-7A06E4958F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{241C5124-1E74-413E-9D41-7A06E4958F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{241C5124-1E74-413E-9D41-7A06E4958F4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
