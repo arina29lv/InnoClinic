@@ -1,0 +1,23 @@
+.main-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* общий контейнер для всех секций страницы */
+.section-container {
+  max-width: 1260px;   /* ширина контента */
+  margin: 0 auto;      /* центрируем */
+  padding: 56px 24px;  /* вертикальные + боковые отступы */
+}
+
+/* Global smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optional: spacing so sections are not hidden under sticky header */
+.page-section {
+  scroll-margin-top: 90px; /* offset for sticky header */
+}

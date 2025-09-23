@@ -1,0 +1,141 @@
+/* ===== main footer ===== */
+.footer {
+  background: #000000;
+  color: #ffffff;
+  padding: 36px 40px;
+  font-family: "Georgia", serif;
+}
+
+.footer-grid {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.1fr;
+  gap: 32px;
+  align-items: stretch; /* было start */
+}
+
+
+/* columns */
+.f-col { min-width: 0; }
+
+/* left: logo */
+/* колонка с логотипом */
+.f-logo {
+  display: flex;
+   /* горизонталь */
+  align-items: center;       /* вертикаль */
+  height: 100%;              /* чтобы заняло всю высоту колонки */
+}
+
+/* left: logo */
+.f-logo-text {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-align: center;
+  color: #c80000;   /* красный для логотипа */
+}
+
+
+
+/* center: contacts */
+.f-heading {
+  margin: 0 0 14px;
+  margin-bottom: 25px;
+  font-size: 22px;           /* увеличен размер */
+  font-weight: 700;
+}
+.f-item {
+  display: flex;
+  align-items: center;     
+  gap: 16px;               
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.f-icn {
+  font-size: 22px;
+  color: #ffd9d9;
+  flex-shrink: 0;
+}
+
+.f-lines span {
+  display: block;
+  line-height: 1.5;
+}
+
+/* right: map */
+.map-heading { 
+  margin-bottom: 10px;
+  font-size: 22px;           /* увеличен размер */
+  font-weight: 700;
+}
+.f-map-frame iframe {
+  width: 100%;
+  height: 210px;
+  border: 0;
+  border-radius: 6px;
+}
+
+/* ===== bottom mini-footer ===== */
+/* ===== bottom mini-footer ===== */
+.footer-bottom {
+  background: #2d2d2d;
+  color: #eee;
+  padding: 12px 20px;
+}
+
+.footer-bottom-inner {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* левая колонка / центр / правая */
+  align-items: center;
+  font-size: 14px;
+}
+
+/* слева */
+.fb-left {
+  justify-self: start;
+}
+
+/* центр */
+.fb-center {
+  justify-self: center;
+  display: flex;
+  gap: 8px;
+}
+
+/* справа */
+.fb-right {
+  justify-self: end;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+
+/* оформление ссылок */
+.footer-bottom .muted {
+  opacity: .8;
+  pointer-events: none;
+  user-select: none;
+}
+
+.footer-bottom .sep {
+  opacity: .4;
+}
+
+
+/* ===== responsive ===== */
+@media (max-width: 1000px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    text-align: center;
+  }
+  .f-logo { justify-content: center; }
+  .f-item { grid-template-columns: 22px 1fr; justify-content: center; }
+  .map-heading { text-align: center; }
+}

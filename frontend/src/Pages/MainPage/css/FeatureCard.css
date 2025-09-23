@@ -1,0 +1,33 @@
+.feature-card {
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 18px 16px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  font-family: "Georgia", serif;
+}
+
+.feature-icon {
+  width: 36px;
+  height: 36px;
+  color: #ad0000;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.feature-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Georgia", serif;
+}
+
+.feature-text {
+  margin: 0;
+  font-size: 14px;
+  color: #4a4a4a;
+  line-height: 1.6;
+  font-family: "Georgia", serif;
+}

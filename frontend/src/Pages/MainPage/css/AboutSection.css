@@ -1,0 +1,61 @@
+/* ===== ABOUT SECTION ===== */
+.about-section {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr; /* текст шире */
+  gap: 40px;
+  background: #fff;
+}
+
+.about-left {
+  font-family: "Georgia", serif;
+  color: #222;
+}
+
+.about-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ad0000;
+  font-family: "Georgia", serif;
+}
+
+.about-lead {
+  margin: 0 0 16px;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.about-right {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.about-quote {
+  margin: 24px 0 0;
+  padding-left: 20px;
+  font-size: 17px;
+  font-style: italic;          /* только курсив */
+  color: #5a0000;              /* мягкий бордовый */
+  line-height: 1.6;
+  border-left: 3px solid #8b0000; /* лёгкий акцент слева */
+  font-family: "Georgia", serif;
+  opacity: 0.9;                /* чуть мягче обычного текста */
+}
+
+/* адаптив */
+@media (max-width: 992px) {
+  .about-section {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .about-right {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-right {
+    grid-template-columns: 1fr;
+  }
+}
